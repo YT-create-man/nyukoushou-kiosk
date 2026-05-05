@@ -1,0 +1,158 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: #111;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#app { height: 100%; position: relative; }
+
+.page {
+  display: none;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+.page.active { display: flex; }
+
+.store-name {
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  font-size: 24px;
+  color: #888;
+  letter-spacing: 2px;
+}
+
+.title {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  margin-bottom: 80px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 60px;
+}
+
+button {
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+button.action {
+  width: 320px;
+  height: 320px;
+  border-radius: 24px;
+  font-size: 80px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 8px;
+}
+button.action.checkin { background: #1a8a3a; }
+button.action.checkout { background: #b53030; }
+button.action:active { transform: scale(0.97); }
+
+.action-label {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 36px;
+  font-weight: 700;
+  padding: 8px 32px;
+  border-radius: 12px;
+}
+.action-label.checkin { background: #1a8a3a; }
+.action-label.checkout { background: #b53030; }
+
+#video {
+  width: 75%;
+  max-width: 600px;
+  border-radius: 12px;
+  background: #000;
+}
+
+.hint {
+  margin-top: 32px;
+  font-size: 32px;
+  color: #ccc;
+}
+
+.member-id {
+  font-size: 140px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  margin-bottom: 16px;
+}
+
+.member-info {
+  font-size: 24px;
+  color: #888;
+  margin-bottom: 80px;
+  min-height: 32px;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 40px;
+}
+
+button.ok {
+  width: 280px;
+  height: 140px;
+  border-radius: 16px;
+  background: #1a8a3a;
+  color: #fff;
+  font-size: 48px;
+  font-weight: 700;
+}
+
+button.cancel {
+  width: 280px;
+  height: 140px;
+  border-radius: 16px;
+  background: #333;
+  color: #ccc;
+  font-size: 36px;
+}
+
+#page-scan button.cancel,
+#page-error button.cancel {
+  position: absolute;
+  bottom: 40px;
+  width: 240px;
+  height: 80px;
+  font-size: 28px;
+}
+
+.success-msg {
+  font-size: 80px;
+  font-weight: 700;
+  color: #4ade80;
+  margin-bottom: 16px;
+}
+
+.success-sub {
+  font-size: 32px;
+  color: #888;
+}
+
+.error-msg {
+  font-size: 48px;
+  color: #ff8080;
+  text-align: center;
+  margin-bottom: 60px;
+}

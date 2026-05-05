@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>入校受付</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <div id="page-action" class="page active">
+    <div class="store-name" id="store-display"></div>
+    <div class="title">入校受付</div>
+    <div class="action-buttons">
+      <button id="btn-checkin" class="action checkin">入校</button>
+      <button id="btn-checkout" class="action checkout">退校</button>
+    </div>
+  </div>
+
+  <div id="page-scan" class="page">
+    <div class="action-label" id="action-label-scan"></div>
+    <video id="video" playsinline autoplay muted></video>
+    <canvas id="canvas" hidden></canvas>
+    <div class="hint">QRコードをかざしてください</div>
+    <button class="cancel" id="btn-cancel-scan">キャンセル</button>
+  </div>
+
+  <div id="page-confirm" class="page">
+    <div class="action-label" id="action-label-confirm"></div>
+    <div class="member-id" id="member-id-display"></div>
+    <div class="confirm-buttons">
+      <button id="btn-cancel-confirm" class="cancel">キャンセル</button>
+      <button id="btn-ok" class="ok">OK</button>
+    </div>
+  </div>
+
+  <div id="page-success" class="page">
+    <div class="success-msg" id="success-msg"></div>
+    <div class="success-sub" id="success-sub"></div>
+  </div>
+
+  <div id="page-error" class="page">
+    <div class="error-msg" id="error-msg"></div>
+    <button class="cancel" id="btn-back-error">戻る</button>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
