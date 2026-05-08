@@ -10,10 +10,12 @@ const pages = {
 let state = {
   currentAction: null,
   currentMember: null,
-  scanning: false,
   stream: null,
-  rafId: null
+  scanControls: null,
+  busy: false
 };
+
+let codeReader = null;
 
 function showPage(name) {
   Object.values(pages).forEach(p => p.classList.remove('active'));
@@ -33,20 +35,33 @@ function init() {
 
 async function startScan(action) {
   state.currentAction = action;
+  state.busy = false;
   applyActionLabel('action-label-scan', action);
   showPage('scan');
 
   try {
+    if (!codeReader) codeReader = new ZXingBrowser.BrowserMultiFormatReader();
     state.stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'user' },
       audio: false
     });
-    $('video').srcObject = state.stream;
-    state.scanning = true;
-    state.rafId = requestAnimationFrame(tick);
+    state.scanControls = await codeReader.decodeFromStream(
+      state.stream,
+      $('video'),
+      handleDecodeResult
+    );
   } catch (err) {
     showError('カメラ起動失敗: ' + err.message);
   }
+}
+
+function handleDecodeResult(result, err, controls) {
+  if (!result || state.busy) return;
+  const text = (typeof result.getText === 'function' ? result.getText() : result.text || '').trim();
+  if (!/^\d{8}$/.test(text)) return;
+  state.busy = true;
+  stopCamera();
+  onBarcodeScanned(text);
 }
 
 function applyActionLabel(elemId, action) {
@@ -56,32 +71,17 @@ function applyActionLabel(elemId, action) {
   el.classList.add(action === '入校' ? 'checkin' : 'checkout');
 }
 
-function tick() {
-  if (!state.scanning) return;
-  const video = $('video');
-  if (video.readyState === video.HAVE_ENOUGH_DATA) {
-    const canvas = $('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const code = jsQR(imgData.data, canvas.width, canvas.height);
-    if (code && code.data) {
-      onQrDetected(code.data.trim());
-      return;
-    }
-  }
-  state.rafId = requestAnimationFrame(tick);
-}
-
 function stopCamera() {
-  state.scanning = false;
-  if (state.rafId) cancelAnimationFrame(state.rafId);
+  if (state.scanControls) {
+    try { state.scanControls.stop(); } catch (_) {}
+    state.scanControls = null;
+  }
   if (state.stream) {
     state.stream.getTracks().forEach(t => t.stop());
     state.stream = null;
   }
+  const video = $('video');
+  if (video) video.srcObject = null;
 }
 
 function cancelScan() {
@@ -90,8 +90,7 @@ function cancelScan() {
   showPage('action');
 }
 
-async function onQrDetected(memberId) {
-  stopCamera();
+async function onBarcodeScanned(memberId) {
   try {
     const res = await callGas({
       action: 'lookup',
@@ -149,6 +148,7 @@ function goAction() {
   stopCamera();
   state.currentAction = null;
   state.currentMember = null;
+  state.busy = false;
   $('member-id-display').textContent = '';
   $('success-msg').textContent = '';
   $('success-sub').textContent = '';
